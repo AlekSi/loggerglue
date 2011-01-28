@@ -1,0 +1,11 @@
+syntax: glob
+
+*.pyc
+*~
+lib/*
+build/*
+dist/*
+*.egg/*
+include/*
+*.egg-info/*
+bin/*
