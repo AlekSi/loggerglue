@@ -7,6 +7,7 @@ Copyright © 2011 Evax Software <contact@evax.fr>
 from datetime import datetime, timedelta
 from pyparsing import *
 from loggerglue.util.MultiDict import OrderedMultiDict
+from loggerglue.util.escape_value import escape_param_value, str_or_nil
 
 # from the RFCs ABNF description
 nilvalue = Word("-")
@@ -73,6 +74,14 @@ class SDElement(object):
         self.id = sd_id
         self.sd_params = sd_params
         self.params = Params(sd_params)
+        
+    def __str__(self):
+        '''Convert SDElement to string'''
+        rv = ['[', self.id]
+        for (k,v) in self.sd_params.allitems():
+            rv += [' ',k,'="',escape_param_value(v),'"']
+        rv += [']']
+        return ''.join(rv)
 
     @classmethod
     def parse(cls, parsed):
@@ -89,6 +98,10 @@ class SDElement(object):
 class StructuredData(object):
     def __init__(self, elements):
         self.elements = elements
+        
+    def __str__(self):
+        '''Convert StructuredData to string'''
+        return ''.join([str(e) for e in self.elements])
 
     @classmethod
     def parse(cls, parsed):
@@ -104,6 +117,19 @@ class StructuredData(object):
                         i.SD_PARAM.SD_PARAM_VALUE.decode('utf-8')
             elements.append(SDElement(sd_id, params))
         return StructuredData(elements)
+
+    @classmethod
+    def from_str(cls, line):
+        """Returns a StructuredData object from a string"""
+        try:
+            r = structured_data.parseString(line)
+            return cls.parse(r)
+        except Exception, e:
+            print e
+            import sys, traceback
+            traceback.print_exc(file=sys.stdout)
+
+            return None
     
 class SyslogEntry(object):
     """A class representing a syslog entry."""
@@ -136,7 +162,22 @@ class SyslogEntry(object):
                 self.msg = unicode(m)
         else:
             self.msg = None
+        self.prival = int(self.prival)
         self.structured_data = StructuredData.parse(parsed)
+        
+    def __str__(self):
+        '''Convert SyslogEntry to string'''
+        rv = ['<', str(self.prival), '>', str(self.version), ' ']
+        if self.timestamp is None:
+            rv.append('-')
+        else:
+            rv.append(self.timestamp.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
+        rv += [' ',
+               str_or_nil(self.hostname), ' ', str_or_nil(self.app_name), ' ', str_or_nil(self.procid), ' ',
+               str_or_nil(self.msgid),    ' ', str_or_nil(self.structured_data)]
+        if self.msg is not None:
+            rv += [' ', BOM, self.msg.encode('utf-8')]
+        return ''.join(rv)
 
     @classmethod
     def from_line(cls, line):
