@@ -7,7 +7,7 @@ valids = (
         """<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"] \xef\xbb\xbfAn application event log entry...""",
         """<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"][examplePriority@32473 class="high"]""",
         """<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [traceback@32473 file="main.py" line="123" method="runStuff" file="pinger.py" line="456" method="pingpong"]""",
-        """<34>1 2003-10-11T22:14:15.003000Z mymachine.example.com su - ID47 [test@32473 escaped="\\"nS\\]t\\\u"] \xef\xbb\xbf'su root' failed for lonvick on /dev/pts/8""",
+        """<34>1 2003-10-11T22:14:15.003000Z mymachine.example.com su - ID47 [test@32473 escaped="\\"nS\\]t\\\u\n"] \xef\xbb\xbf'su root' failed\n for lonvick on /dev/pts/8""",
         )
 
 invalids = (
