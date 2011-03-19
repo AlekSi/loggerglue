@@ -6,6 +6,7 @@ Copyright © 2011 Evax Software <contact@evax.fr>
 """
 from datetime import datetime, timedelta
 from pyparsing import *
+from MultiDict import OrderedMultiDict
 
 # from the RFCs ABNF description
 nilvalue = Word("-")
@@ -79,7 +80,7 @@ class SDElement(object):
         if sd is None or sd == '-':
             return None
         sd_id = parsed.STRUCTURED_DATA.SD_ID
-        params = {}
+        params = OrderedMultiDict()
         for i in parsed.STRUCTURED_DATA.SD_PARAMS:
             params[i.SD_PARAM.SD_PARAM_NAME] = \
                     i.SD_PARAM.SD_PARAM_VALUE.decode('utf-8')
@@ -97,13 +98,13 @@ class StructuredData(object):
         elements = []
         for se in parsed.SD_ELEMENTS:
             sd_id = se.SD_ID
-            params = {}
+            params = OrderedMultiDict()
             for i in se.SD_PARAMS:
                 params[i.SD_PARAM.SD_PARAM_NAME] = \
                         i.SD_PARAM.SD_PARAM_VALUE.decode('utf-8')
             elements.append(SDElement(sd_id, params))
         return StructuredData(elements)
-
+    
 class SyslogEntry(object):
     """A class representing a syslog entry."""
     def __init__(self, parsed):
