@@ -72,7 +72,7 @@ class Params(object):
 class SDElement(object):
     def __init__(self, sd_id, sd_params):
         self.id = sd_id
-        self.sd_params = sd_params
+        self.sd_params = OrderedMultiDict(sd_params)
         self.params = Params(sd_params)
         
     def __str__(self):
