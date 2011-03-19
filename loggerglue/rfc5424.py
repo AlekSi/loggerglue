@@ -77,7 +77,7 @@ class SDElement(object):
     def __init__(self, sd_id, sd_params):
         self.id = sd_id
         self.sd_params = OrderedMultiDict(sd_params)
-        self.params = Params(sd_params)
+        self.params = Params(self.sd_params)
         
     def __str__(self):
         '''Convert SDElement to string'''
