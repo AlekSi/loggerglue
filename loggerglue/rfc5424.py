@@ -64,6 +64,10 @@ header = pri + version + sp + timestamp + sp + hostname + sp + \
 syslog_msg = LineStart() + header + structured_data + \
              Optional(sp+msg) + LineEnd()
 
+# Default Prival for new SyslogEntry instances
+from syslog import LOG_INFO,LOG_USER
+DEFAULT_PRIVAL = LOG_INFO|LOG_USER
+
 class Params(object):
     def __init__(self, d):
         for k, v in d.items():
@@ -133,7 +137,7 @@ class StructuredData(object):
     
 class SyslogEntry(object):
     """A class representing a syslog entry."""
-    def __init__(self, prival, version=1, timestamp=None, 
+    def __init__(self, prival=DEFAULT_PRIVAL, version=1, timestamp=None, 
             hostname=None, appname=None, procid=None, msgid=None,
             structured_data=None, msg=None):
         self.prival = prival
