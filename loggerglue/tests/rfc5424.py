@@ -6,6 +6,7 @@ valids = (
         """<165>1 2003-08-24T05:14:15.000003-07:00 192.0.2.1 myproc 8710 - - %% It's time to make the do-nuts.""",
         """<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"] \xef\xbb\xbfAn application event log entry...""",
         """<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"][examplePriority@32473 class="high"]""",
+        """<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [traceback@32473 file="main.py" line="123" method="runStuff" file="pinger.py" line="456" method="pingpong"]""",
         )
 
 invalids = (
@@ -54,10 +55,16 @@ class TestSyslogEntry(unittest.TestCase):
         self.assertEqual(se.timestamp.year, 2003)
         self.assertEqual(se.hostname, 'mymachine.example.com')
         self.assertEqual(se.msgid, 'ID47')
+        
         se = SyslogEntry.from_line(valids[3])
         self.assertEqual(len(se.structured_data.elements), 2)
         self.assertEqual(len(se.structured_data.elements[0].sd_params), 3)
         self.assertEqual(len(se.structured_data.elements[1].sd_params), 1)
+
+        se = SyslogEntry.from_line(valids[4])
+        self.assertEqual(len(se.structured_data.elements), 1)
+        self.assertEqual(len(list(se.structured_data.elements[0].sd_params.allitems())), 6)
+        self.assertEqual(len(list(se.structured_data.elements[0].sd_params.getall("file"))), 2)
 
 if __name__ == '__main__':
     unittest.main()
