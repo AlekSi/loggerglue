@@ -24,7 +24,7 @@ msg_any = utf_8_string
 msg = Combine(Or([msg_utf8, msg_any])).setResultsName('MSG')
 sd_name = CharsNotIn('= ]"', 1, 32)
 param_name = sd_name.setResultsName('SD_PARAM_NAME')
-param_value = QuotedString(quoteChar='"', escChar='\\')
+param_value = QuotedString(quoteChar='"', escChar='\\', multiline=True)
 param_value = param_value.setResultsName('SD_PARAM_VALUE')
 sd_id = sd_name.setResultsName('SD_ID')
 sd_param = Group(param_name + Regex('=') + param_value)
