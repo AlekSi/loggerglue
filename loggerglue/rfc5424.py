@@ -138,13 +138,13 @@ class StructuredData(object):
 class SyslogEntry(object):
     """A class representing a syslog entry."""
     def __init__(self, prival=DEFAULT_PRIVAL, version=1, timestamp=None, 
-            hostname=None, appname=None, procid=None, msgid=None,
+            hostname=None, app_name=None, procid=None, msgid=None,
             structured_data=None, msg=None):
         self.prival = prival
         self.version = version
         self.timestamp = timestamp
         self.hostname = hostname
-        self.appname = appname
+        self.app_name = app_name
         self.procid = procid
         self.msgid = msgid
         self.structured_data = structured_data
@@ -185,7 +185,7 @@ class SyslogEntry(object):
         structured_data = StructuredData.parse(parsed)
         return cls(
             prival=prival, version=version, timestamp=timestamp, 
-            hostname=attr['hostname'], appname=attr['app_name'], procid=attr['procid'], msgid=attr['msgid'],
+            hostname=attr['hostname'], app_name=attr['app_name'], procid=attr['procid'], msgid=attr['msgid'],
             structured_data=structured_data, msg=msg
         )
         
@@ -197,7 +197,7 @@ class SyslogEntry(object):
         else:
             rv.append(self.timestamp.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
         rv += [' ',
-               str_or_nil(self.hostname), ' ', str_or_nil(self.appname), ' ', str_or_nil(self.procid), ' ',
+               str_or_nil(self.hostname), ' ', str_or_nil(self.app_name), ' ', str_or_nil(self.procid), ' ',
                str_or_nil(self.msgid),    ' ', str_or_nil(self.structured_data)]
         if self.msg is not None:
             rv += [' ', BOM, self.msg.encode('utf-8')]
