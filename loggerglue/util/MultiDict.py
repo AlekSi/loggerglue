@@ -180,6 +180,8 @@ class OrderedMultiDict(_BaseMultiDict):
         if multidict is not None:
             if hasattr(multidict, "allitems"):
                 multidict = multidict.allitems()
+            elif hasattr(multidict, "items"):
+                multidict = multidict.items()
             for k, v in multidict:
                 self[k] = v
     def __eq__(self, other):
@@ -252,6 +254,8 @@ class UnorderedMultiDict(_BaseMultiDict):
         if multidict is not None:
             if hasattr(multidict, "allitems"):
                 multidict = multidict.allitems()
+            elif hasattr(multidict, "items"):
+                multidict = multidict.items()
             for k, v in multidict:
                 self[k] = v
 
