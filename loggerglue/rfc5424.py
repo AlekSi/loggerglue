@@ -133,37 +133,57 @@ class StructuredData(object):
     
 class SyslogEntry(object):
     """A class representing a syslog entry."""
-    def __init__(self, parsed):
-        self._parsed = parsed
+    def __init__(self, prival, version=1, timestamp=None, 
+            hostname=None, appname=None, procid=None, msgid=None,
+            structured_data=None, msg=None):
+        self.prival = prival
+        self.version = version
+        self.timestamp = timestamp
+        self.hostname = hostname
+        self.appname = appname
+        self.procid = procid
+        self.msgid = msgid
+        self.structured_data = structured_data
+        self.msg = msg
+    
+    @classmethod
+    def parse(cls, parsed):
         ts = parsed.TIMESTAMP
         if ts == '-':
-            self.timestamp = datetime.now()
+            timestamp = datetime.now()
         elif ts[-1] == 'Z':
-            self.timestamp = datetime.strptime(ts, "%Y-%m-%dT%H:%M:%S.%fZ")
+            timestamp = datetime.strptime(ts, "%Y-%m-%dT%H:%M:%S.%fZ")
         else:
-            self.timestamp = datetime.strptime(ts[:-6],
+            timestamp = datetime.strptime(ts[:-6],
                                                "%Y-%m-%dT%H:%M:%S.%f")
             hours = int(ts[-5:-3])
             mins = int(ts[-2:])
             sign = ts[-6] == '-' and -1 or 1
-            self.timestamp += timedelta(sign*(hours*3600+mins*60))
+            timestamp += timedelta(sign*(hours*3600+mins*60))
+        attr = {}
         for i in ('prival', 'version', 'hostname', 'app_name',
                   'procid', 'msgid'):
             I = i.upper()
             v = getattr(parsed, I, None)
             if v is not None:
                 v = v.decode('utf-8')
-            setattr(self, i, v)
+            attr[i] = v
         m = getattr(parsed, 'MSG', None)
         if m is not None:
             if m.startswith(BOM):
-                self.msg = m[3:].decode('utf-8')
+                msg = m[3:].decode('utf-8')
             else:
-                self.msg = unicode(m)
+                msg = unicode(m)
         else:
-            self.msg = None
-        self.prival = int(self.prival)
-        self.structured_data = StructuredData.parse(parsed)
+            msg = None
+        version = int(attr['version'])
+        prival = int(attr['prival'])
+        structured_data = StructuredData.parse(parsed)
+        return cls(
+            prival=prival, version=version, timestamp=timestamp, 
+            hostname=attr['hostname'], appname=attr['app_name'], procid=attr['procid'], msgid=attr['msgid'],
+            structured_data=structured_data, msg=msg
+        )
         
     def __str__(self):
         '''Convert SyslogEntry to string'''
@@ -173,7 +193,7 @@ class SyslogEntry(object):
         else:
             rv.append(self.timestamp.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
         rv += [' ',
-               str_or_nil(self.hostname), ' ', str_or_nil(self.app_name), ' ', str_or_nil(self.procid), ' ',
+               str_or_nil(self.hostname), ' ', str_or_nil(self.appname), ' ', str_or_nil(self.procid), ' ',
                str_or_nil(self.msgid),    ' ', str_or_nil(self.structured_data)]
         if self.msg is not None:
             rv += [' ', BOM, self.msg.encode('utf-8')]
@@ -184,7 +204,7 @@ class SyslogEntry(object):
         """Returns a SyslogEntry object from a syslog line."""
         try:
             r = syslog_msg.parseString(line.strip())
-            return SyslogEntry(r)
+            return cls.parse(r)
         except Exception, e:
             print e
             import sys, traceback
