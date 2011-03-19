@@ -6,7 +6,7 @@ Copyright © 2011 Evax Software <contact@evax.fr>
 """
 from datetime import datetime, timedelta
 from pyparsing import *
-from MultiDict import OrderedMultiDict
+from loggerglue.util.MultiDict import OrderedMultiDict
 
 # from the RFCs ABNF description
 nilvalue = Word("-")
