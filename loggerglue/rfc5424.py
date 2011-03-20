@@ -163,6 +163,8 @@ class SyslogEntry(object):
         self.app_name = app_name
         self.procid = procid
         self.msgid = msgid
+        if structured_data is not None and not isinstance(structured_data, StructuredData):
+            structured_data = StructuredData(structured_data)
         self.structured_data = structured_data
         self.msg = msg
     
