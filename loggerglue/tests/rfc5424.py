@@ -9,6 +9,7 @@ valids = (
         """<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [traceback@32473 file="main.py" line="123" method="runStuff" file="pinger.py" line="456" method="pingpong"]""",
         """<34>1 2003-10-11T22:14:15.003000Z mymachine.example.com su - ID47 [test@32473 escaped="\\"nS\\]t\\\u\n"] \xef\xbb\xbf'su root' failed\n for lonvick on /dev/pts/8""",
         """<165>1 2003-10-11T22:14:15.003000Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"] \xef\xbb\xbfAn application event log entry...""",
+        """<78>1 2011-03-20T12:00:01+01:00 mymachine.example.com - 9778 - - - (orion) CMD (/home/www/stats/pinger.py /home/www/stats/data/pinger.pickle)""",
         )
 
 invalids = (
@@ -82,6 +83,10 @@ class TestSyslogEntry(unittest.TestCase):
                 msg=u'An application event log entry...'
         )
         self.assertEqual(str(se), valids[6])
+        
+        se = SyslogEntry.from_line(valids[7])
+        self.assertEqual(se.timestamp.year, 2011)
+        
 
 if __name__ == '__main__':
     unittest.main()

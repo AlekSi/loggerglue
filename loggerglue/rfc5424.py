@@ -10,6 +10,7 @@ from pyparsing import Word, Regex, Group, White, Combine, CharsNotIn, \
     printables, ParseException
 from loggerglue.util.MultiDict import OrderedMultiDict
 from loggerglue.util.escape_value import escape_param_value, str_or_nil
+from loggerglue.util.parse_timestamp import parse_timestamp
 
 # from the RFCs ABNF description
 nilvalue = Word("-")
@@ -154,18 +155,12 @@ class SyslogEntry(object):
     
     @classmethod
     def parse(cls, parsed):
-        ts = parsed.TIMESTAMP
-        if ts == '-':
+        ts = parse_timestamp(parsed.TIMESTAMP)
+        if ts is None:
+            # If no timestamp provided, fill in current date and time
             timestamp = datetime.now()
-        elif ts[-1] == 'Z':
-            timestamp = datetime.strptime(ts, "%Y-%m-%dT%H:%M:%S.%fZ")
         else:
-            timestamp = datetime.strptime(ts[:-6],
-                                               "%Y-%m-%dT%H:%M:%S.%f")
-            hours = int(ts[-5:-3])
-            mins = int(ts[-2:])
-            sign = ts[-6] == '-' and -1 or 1
-            timestamp += timedelta(sign*(hours*3600+mins*60))
+            timestamp = ts
         attr = {}
         for i in ('prival', 'version', 'hostname', 'app_name',
                   'procid', 'msgid'):
