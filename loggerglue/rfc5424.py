@@ -178,10 +178,10 @@ class SyslogEntry(object):
         for i in ('prival', 'version', 'hostname', 'app_name',
                   'procid', 'msgid'):
             I = i.upper()
-            v = getattr(parsed, I, None)
+            v = getattr(parsed, I, '-')
             if v in ["", "-"]:
                 v = None
-            if v is not None:
+            else:
                 v = v.decode('utf-8')
             attr[i] = v
         m = getattr(parsed, 'MSG', None)
