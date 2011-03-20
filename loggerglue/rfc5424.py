@@ -12,6 +12,9 @@ from loggerglue.util.MultiDict import OrderedMultiDict
 from loggerglue.util.escape_value import escape_param_value, str_or_nil
 from loggerglue.util.parse_timestamp import parse_timestamp
 
+# Support SYSLOG_SyslogProtocol23Format which can send an empty APP-NAME.
+SUPPORT_MISSING_VALUES = True
+
 # from the RFCs ABNF description
 nilvalue = Word("-")
 digit = Regex("[0-9]{1}")
@@ -53,11 +56,21 @@ date_fullyear = Regex('[0-9]{4}')
 full_date = date_fullyear + '-' + date_month + '-' + date_mday
 timestamp = Combine(Or([nilvalue, full_date + 'T' + full_time]))
 timestamp = timestamp.setResultsName('TIMESTAMP')
-msgid = Or([nilvalue, CharsNotIn('= ]"', 1, 32)]).setResultsName('MSGID')
-procid = Or([nilvalue,CharsNotIn('= ]"', 1, 128)]).setResultsName('PROCID')
+msgid = Or([nilvalue, CharsNotIn('= ]"', 1, 32)])
+if SUPPORT_MISSING_VALUES:
+    msgid = Optional(msgid)
+msgid = msgid.setResultsName('MSGID')
+procid = Or([nilvalue,CharsNotIn('= ]"', 1, 128)])
+if SUPPORT_MISSING_VALUES:
+    procid = Optional(procid)
+procid = procid.setResultsName('PROCID')
 app_name = Or([nilvalue, CharsNotIn('= ]"', 1, 48)])
+if SUPPORT_MISSING_VALUES:
+    app_name = Optional(app_name)
 app_name= app_name.setResultsName('APP_NAME')
 hostname = Or([nilvalue, CharsNotIn('= ]"', 1, 255)])
+if SUPPORT_MISSING_VALUES:
+    hostname = Optional(hostname)
 hostname = hostname.setResultsName('HOSTNAME')
 version = Regex('[1-9][0-9]{0,2}').setResultsName('VERSION')
 prival = Regex("[0-9]{1,3}").setResultsName('PRIVAL')
@@ -166,6 +179,8 @@ class SyslogEntry(object):
                   'procid', 'msgid'):
             I = i.upper()
             v = getattr(parsed, I, None)
+            if v in ["", "-"]:
+                v = None
             if v is not None:
                 v = v.decode('utf-8')
             attr[i] = v
