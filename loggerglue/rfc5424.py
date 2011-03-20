@@ -5,7 +5,9 @@ A parser for the Syslog Protocol
 Copyright © 2011 Evax Software <contact@evax.fr>
 """
 from datetime import datetime, timedelta
-from pyparsing import *
+from pyparsing import Word, Regex, Group, White, Combine, CharsNotIn, \
+    ZeroOrMore, OneOrMore, QuotedString, Or, Optional, LineStart, LineEnd, \
+    printables, ParseException
 from loggerglue.util.MultiDict import OrderedMultiDict
 from loggerglue.util.escape_value import escape_param_value, str_or_nil
 
