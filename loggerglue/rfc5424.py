@@ -17,7 +17,7 @@ nilvalue = Word("-")
 digit = Regex("[0-9]{1}")
 nonzero_digit = Regex("[1-9]{1}")
 printusascii = printables
-sp = White(" ")
+sp = White(" ", exact=1)
 octet = Regex('[\x00-\xFF]')
 utf_8_string = Regex('[\x00-\xFF]*')
 BOM = '\xef\xbb\xbf'
