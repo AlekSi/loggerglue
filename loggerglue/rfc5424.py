@@ -157,8 +157,8 @@ class SyslogEntry(object):
     def parse(cls, parsed):
         ts = parse_timestamp(parsed.TIMESTAMP)
         if ts is None:
-            # If no timestamp provided, fill in current date and time
-            timestamp = datetime.now()
+            # If no timestamp provided, fill in current UTC date and time
+            timestamp = datetime.utcnow()
         else:
             timestamp = ts
         attr = {}
