@@ -212,7 +212,11 @@ class SyslogEntry(object):
                str_or_nil(self.hostname), ' ', str_or_nil(self.app_name), ' ', str_or_nil(self.procid), ' ',
                str_or_nil(self.msgid),    ' ', str_or_nil(self.structured_data)]
         if self.msg is not None:
-            rv += [' ', BOM, self.msg.encode('utf-8')]
+            rv += [' ']
+            if type(self.msg) is unicode:
+                rv += [BOM, self.msg.encode('utf-8')]
+            else:
+                rv += [self.msg]
         return ''.join(rv)
 
     @classmethod
