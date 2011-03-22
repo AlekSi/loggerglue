@@ -20,8 +20,10 @@ class SyslogHandler(SocketServer.BaseRequestHandler):
     def handle(self):
         if self.server.use_tls:
             return self.handle_tls()
-        while not self.connection.closed:
+        while True:
             line = self.connection.readline()
+            if not line:
+                break
             syslog_entry = SyslogEntry.from_line(line)
             if syslog_entry:
                 self.handle_entry(syslog_entry)
