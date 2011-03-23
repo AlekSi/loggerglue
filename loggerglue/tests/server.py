@@ -93,7 +93,7 @@ class TestServer(unittest.TestCase):
         thr.join()
         serv.socket.close()
         
-        print serv.entry.msg == "An application event log entry through TCP..."
+        self.assertEqual(serv.entry.msg, "An application event log entry through TCP...")
 
     def test_tcps(self):
         address = ('127.0.0.1', 5515)
@@ -124,7 +124,7 @@ class TestServer(unittest.TestCase):
         os.unlink(keyfile.name)
         os.unlink(certfile.name)
 
-        print serv.entry.msg == "An application event log entry through TCPS..."
+        self.assertEqual(serv.entry.msg, "An application event log entry through TCPS...")
 
 if __name__ == '__main__':
     unittest.main()
