@@ -81,7 +81,7 @@ syslog_msg = LineStart() + header + structured_data + \
              Optional(sp+msg) + LineEnd()
 
 # Default Prival for new SyslogEntry instances
-from syslog import LOG_INFO,LOG_USER
+from constants import LOG_INFO,LOG_USER
 DEFAULT_PRIVAL = LOG_INFO|LOG_USER
 
 class Params(object):
