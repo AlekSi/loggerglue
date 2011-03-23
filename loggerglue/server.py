@@ -34,6 +34,8 @@ class SyslogHandler(SocketServer.BaseRequestHandler):
         buf = ''
         while True:
             r = self.request.recv(1)
+            if not r:
+                break # EOF
             if r != ' ':
                 buf += r
             else:
