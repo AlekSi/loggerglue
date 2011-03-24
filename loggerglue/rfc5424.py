@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-A parser for the Syslog Protocol
-(RFC5424 - http://tools.ietf.org/search/rfc5424)
+A parser for the Syslog Protocol (RFC5424 - http://tools.ietf.org/search/rfc542)
+
 Copyright © 2011 Evax Software <contact@evax.fr>
 """
 from datetime import datetime, timedelta
@@ -90,13 +90,42 @@ class Params(object):
             setattr(self, k, v)
 
 class SDElement(object):
+    """
+    An SD-ELEMENT consists of a name and parameter name-value pairs.
+    """
     def __init__(self, sd_id, sd_params):
+        """
+        **arguments**
+            *sd_id*
+                SD-IDs are case-sensitive and uniquely identify the type and purpose
+                of the SD-ELEMENT.
+            
+            *sd_params*
+                Key/value pairs attached to this SD-ELEMENT. This can be any iterable
+                that yields tuples, a dict or a :class:`~loggerglue.utils.multidict.OrderedMultiDict`
+                (An SD-PARAM key may be repeated multiple times inside an SD-ELEMENT)
+                
+        **attributes**
+            *id*
+                SD-ID for this structured data element.
+                
+            *sd_params*
+                Key/value pairs attached to this SD-ELEMENT, represented as 
+                a multidict.
+            
+            *params*
+                Key/value pairs attached to this SD-ELEMENT, represented as
+                a class instance (for convenience, so that parameters can
+                be addressed with `elmt.params.origin`). If there are multiple
+                values for a key, the *last* element is returned.
+                
+        """
         self.id = sd_id
         self.sd_params = OrderedMultiDict(sd_params)
         self.params = Params(self.sd_params)
         
     def __str__(self):
-        '''Convert SDElement to string'''
+        """Convert SDElement to formatted string"""
         rv = ['[', self.id]
         for (k,v) in self.sd_params.allitems():
             rv += [' ',k,'="',escape_param_value(v),'"']
@@ -120,7 +149,7 @@ class StructuredData(object):
         self.elements = elements
         
     def __str__(self):
-        '''Convert StructuredData to string'''
+        """Convert StructuredData to string"""
         return ''.join([str(e) for e in self.elements])
 
     @classmethod
@@ -152,10 +181,50 @@ class StructuredData(object):
             return None
     
 class SyslogEntry(object):
-    """A class representing a syslog entry."""
+    """
+    A class representing a syslog entry.
+    """
     def __init__(self, prival=DEFAULT_PRIVAL, version=1, timestamp=None, 
             hostname=None, app_name=None, procid=None, msgid=None,
             structured_data=None, msg=None):
+        """
+        **arguments/attributes**
+            
+            *prival*
+                RFC5424 priority values are a combination of a priority and facility, for example `LOG_ALERT | LOG_DAEMON`.
+                See :mod:`loggerglue.constants`.
+            
+            *version*
+                Version of syslog entry. There is usually no need to change this.
+            
+            *timestamp*
+                Timestamp (as a datetime object).
+            
+            *hostname*
+                The HOSTNAME field SHOULD contain the hostname and the domain name of the originator.
+            
+            *app_name*
+                The APP-NAME field SHOULD identify the device or application that
+                originated the message.  It is a string without further semantics.
+                It is intended for filtering messages on a relay or collector.
+            
+            *procid*
+                PROCID is a value that is included in the message, having no
+                interoperable meaning, except that a change in the value indicates
+                there has been a discontinuity in syslog reporting. 
+            
+            *msgid*
+                The MSGID SHOULD identify the type of message.
+            
+            *structured_data*
+                STRUCTURED-DATA provides a mechanism to express information in a well
+                defined, easily parseable and interpretable data format.
+            
+            *msg*
+                The MSG part contains a free-form message that provides information
+                about the event.
+
+        """
         self.prival = prival
         self.version = version
         self.timestamp = timestamp
@@ -204,7 +273,7 @@ class SyslogEntry(object):
         )
         
     def __str__(self):
-        '''Convert SyslogEntry to string'''
+        """Convert SyslogEntry to string"""
         rv = ['<', str(self.prival), '>', str(self.version), ' ']
         if self.timestamp is None:
             rv.append('-')
@@ -223,7 +292,7 @@ class SyslogEntry(object):
 
     @classmethod
     def from_line(cls, line):
-        """Returns a SyslogEntry object from a syslog line."""
+        """Returns a parsed SyslogEntry object from a syslog `line`."""
         try:
             r = syslog_msg.parseString(line.strip())
             return cls.parse(r)

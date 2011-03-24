@@ -1,3 +1,17 @@
+1.0 (??)
+----------------
+
+* Wladimir van der Laan <laanwj@gmail.com>
+
+  - Add Sphinx-based documentation and docstrings
+
+  - Emitter for syslog messages, and associated convenience classes
+
+  - Fixes for RFC 5424 edge cases
+
+  - Allow multiple of the same key in STRUCTURED-DATA by representing
+    the parameters using a multidict
+
 0.9 (28/01/2011)
 ----------------
 

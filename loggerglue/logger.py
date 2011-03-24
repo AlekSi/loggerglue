@@ -12,18 +12,24 @@ from loggerglue.emitter import UNIXSyslogEmitter
 class Logger(object):
     """
     Convenience class to log RFC5424 messages to the
-    local syslog daemon.
+    local syslog daemon (by default) or a remote
+    syslog receiver.
     """
 
     def __init__(self, emitter=None, hostname=None, app_name=None, procid=None):
         """
-        Create a new logger object.
-        
-        Keyword arguments:
-        emitter -- Emitter object to send syslog messages, default to Unix socket /dev/log
-        hostname -- Hostname to send with log messages, defaults to current hostname
-        app_name -- Application name to send with log messages, defaults to application name
-        procid -- Process ID to send with log messages, default to current process ID
+        **Arguments**
+            *emitter*
+                Emitter object to send syslog messages, default to Unix socket /dev/log
+                
+            *hostname*
+                Hostname to send with log messages, defaults to system hostname
+                
+            *app_name*
+                Application name to send with log messages, defaults to application name
+                
+            *procid*
+                Process ID to send with log messages, default to current process ID
         """
         if hostname is None:
             # Compute host name to submit to syslog
@@ -52,14 +58,20 @@ class Logger(object):
         Log a message. 
 
         Example:
-        >>> logger.log("test", prival=LOG_DEBUG|LOG_MAIL)
+        
+           >>> logger.log("test", prival=LOG_DEBUG|LOG_MAIL)
 
-        Keyword arguments:
-        msg -- Human readable message to log
-        msgid -- Message identifier
-        structured_data -- Structured data to attach to log message
-        prival -- Priority and facility of message (defaults to INFO|USER)
-        timestamp -- UTC time of log message (default to current time)
+        **Arguments**
+            *msg*
+                Human readable message to log
+            *msgid*
+                Message identifier
+            *structured_data*
+                Structured data to attach to log message
+            *prival*
+                Priority and facility of message (defaults to INFO|USER)
+            *timestamp*
+                UTC time of log message (default to current time)
         """
         if timestamp is None:
             timestamp = datetime.utcnow()

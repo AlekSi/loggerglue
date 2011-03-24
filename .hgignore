@@ -9,3 +9,6 @@ dist/*
 include/*
 *.egg-info/*
 bin/*
+doc/_static/*
+doc/_templates/*
+doc/_build/*
