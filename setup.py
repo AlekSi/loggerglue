@@ -23,7 +23,7 @@ setup(name='loggerglue',
           ],
       keywords = ['syslog', 'rfc5424', 'rfc5425', 'TLS'],
       classifiers = [
-              "Development Status :: 4 - Beta",
+              "Development Status :: 5 - Production/Stable",
               "Intended Audience :: Developers",
               "Intended Audience :: System Administrators",
               "License :: OSI Approved :: MIT License",
