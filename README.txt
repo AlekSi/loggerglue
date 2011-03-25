@@ -11,10 +11,29 @@ This package includes:
 
 * a pyparsing parser for rfc5424
 * a wrapper class for rfc5424 syslog entries
+* an emitter for syslog messages, and associated convenience classes
 * a SyslogServer class supporting TLS (rcf5425)
 
-A trivial example
------------------
+A client example
+----------------
+
+Log a simple message with structured data to the local syslog daemon:
+
+::
+
+    from loggerglue import logger
+    from loggerglue.rfc5424 import SDElement
+    from loggerglue.constants import *
+    l = logger.Logger()
+    l.log(prival=LOG_INFO|LOG_USER,
+          msg="Test message",
+          structured_data=[
+              SDElement("origin",
+                  [("software","test script"), ("swVersion","0.0.1")])
+          ])
+
+A trivial server example
+------------------------
 
 A simple TLS enabled server can be built as follows:
 
@@ -47,10 +66,10 @@ __ http://www.rsyslog.com
 
     *.* @@(o)localhost:6514;RSYSLOG_SyslogProtocol23Format
 
-A more advanced example
------------------------
+A more advanced server example
+------------------------------
 
-In this exemple we index the log data as it comes using Woosh__.
+In this exemple we index the log data as it comes using Whoosh__.
 
 __ https://bitbucket.org/mchaput/whoosh/wiki/Home
 

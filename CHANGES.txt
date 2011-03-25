@@ -1,4 +1,4 @@
-1.0 (??)
+1.0 (25/03/2011)
 ----------------
 
 * Wladimir van der Laan <laanwj@gmail.com>

@@ -74,7 +74,7 @@ Here's an example rsyslog configuration:
 A more advanced server example
 ------------------------------
 
-In this exemple we index the log data as it comes using Woosh.
+In this exemple we index the log data as it comes using Whoosh.
 
 ::
 
