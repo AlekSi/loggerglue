@@ -21,6 +21,7 @@ flakes:
 	-env/bin/pyflakes loggerglue
 
 pep8:
-	-env/bin/pep8 --repeat --statistics loggerglue
+	# E501 line too long
+	-env/bin/pep8 --repeat --statistics --ignore=E501 loggerglue
 
 .PHONY: env doc

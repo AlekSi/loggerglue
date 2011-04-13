@@ -4,10 +4,10 @@ A parser for the Syslog Protocol (RFC5424 - http://tools.ietf.org/search/rfc542)
 
 Copyright © 2011 Evax Software <contact@evax.fr>
 """
-from datetime import datetime, timedelta
+from datetime import datetime
 from pyparsing import Word, Regex, Group, White, Combine, CharsNotIn, \
     ZeroOrMore, OneOrMore, QuotedString, Or, Optional, LineStart, LineEnd, \
-    printables, ParseException
+    printables
 from loggerglue.util.MultiDict import OrderedMultiDict
 from loggerglue.util.escape_value import escape_param_value, str_or_nil
 from loggerglue.util.parse_timestamp import parse_timestamp

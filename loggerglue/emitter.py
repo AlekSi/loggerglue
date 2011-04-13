@@ -3,7 +3,7 @@
 An rfc5424/rfc5425 syslog server implementation
 Copyright © 2011 Evax Software <contact@evax.fr>
 """
-import types, socket, ssl
+import socket, ssl
 
 # Default UDP port to send syslog messages
 SYSLOG_DEFAULT_PORT             = 514

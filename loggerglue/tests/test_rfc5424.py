@@ -1,4 +1,5 @@
 import unittest
+from pyparsing import ParseException
 from loggerglue.rfc5424 import *
 
 valids = (
@@ -20,7 +21,7 @@ class TestABNF(unittest.TestCase):
 
     def test_valids(self):
         for v in valids:
-            r = syslog_msg.parseString(v)
+            syslog_msg.parseString(v)
 
     def test_invalids(self):
         for i in invalids:

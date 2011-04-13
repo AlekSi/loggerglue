@@ -4,9 +4,9 @@ Tests for both the Syslog server and emitter.
 import unittest
 from loggerglue.emitter import TCPSyslogEmitter
 from loggerglue.server import SyslogServer,SyslogHandler
-from loggerglue.rfc5424 import StructuredData, SyslogEntry, SDElement
+from loggerglue.rfc5424 import SyslogEntry, SDElement
 from datetime import datetime
-import socket, os, time, threading
+import os, threading
 from tempfile import NamedTemporaryFile
 
 def create_test_entry(proto):
