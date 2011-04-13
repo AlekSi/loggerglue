@@ -1,4 +1,4 @@
-"""The syslog constants are replicated here because not all systems have the (binary) syslog module. 
+"""The syslog constants are replicated here because not all systems have the (binary) syslog module.
 RFC5424 priority values are a combination of a priority and facility code, for example:
 
     prival = LOG_ALERT | LOG_DAEMON

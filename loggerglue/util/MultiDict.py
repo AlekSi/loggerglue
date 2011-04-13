@@ -32,7 +32,7 @@ The new methods are:
   d.allkeys()
   d.allvalues()
   d.allitems()
-  
+
   >>> import MultiDict
   >>> od = MultiDict.OrderedMultiDict()
   >>> od["Name"] = "Andrew"
@@ -106,12 +106,12 @@ class _BaseMultiDict:
 
     def get(self, key, default = None):
         """value for the given key; default = None if not present
-        
+
         If more than one value exists for the key, use the one added
         most recently.
         """
         return self.data.get(key, [default])[-1]
-    
+
     def __contains__(self, key):
         """check if the key exists"""
         return key in self.data
@@ -127,7 +127,7 @@ class _BaseMultiDict:
         added most recently.
         """
         return [x[-1] for x in self.data.values()]
-    
+
     def items(self):
         """unordered list of key/value pairs
 
@@ -148,7 +148,7 @@ class _BaseMultiDict:
         """iterate through the list of unique keys"""
         return iter(self.data)
 
-    
+
 class OrderedMultiDict(_BaseMultiDict):
     """Store key/value mappings.
 
@@ -190,7 +190,7 @@ class OrderedMultiDict(_BaseMultiDict):
     def __ne__(self, other):
         """Does this OrderedMultiDict have different contents or order as another?"""
         return self.order_data != other.order_data
-    
+
     def __repr__(self):
         return "<OrderedMultiDict %s>" % (self.order_data,)
 
@@ -223,7 +223,7 @@ class OrderedMultiDict(_BaseMultiDict):
         return iter(self.order_data)
 
 
-    
+
 class UnorderedMultiDict(_BaseMultiDict):
     """Store key/value mappings.
 
