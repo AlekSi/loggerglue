@@ -14,7 +14,7 @@ This package includes:
     * a SyslogServer class supporting TLS (rcf5425)
     * classes for constructing and emitting rfc5424 syslog entries
 
-To make use of RFC5424 functionality such as sending structured data with messages, you need a recent syslog 
+To make use of RFC5424 functionality such as sending structured data with messages, you need a recent syslog
 that supports the protocol, such as rsyslog_.
 
 Examples
@@ -31,10 +31,10 @@ Log a simple message with structured data to the local syslog daemon:
     >>> from loggerglue.rfc5424 import SDElement
     >>> from loggerglue.constants import *
     >>> l = logger.Logger()
-    >>> l.log(prival=LOG_INFO|LOG_USER, 
-              msg="Test message", 
+    >>> l.log(prival=LOG_INFO|LOG_USER,
+              msg="Test message",
               structured_data=[
-                  SDElement("origin", 
+                  SDElement("origin",
                       [("software","test script"), ("swVersion","0.0.1")])
               ])
 

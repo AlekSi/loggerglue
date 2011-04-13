@@ -18,4 +18,4 @@ def str_or_nil(s):
     else:
         return str(s)
 
-        
+

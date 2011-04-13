@@ -13,14 +13,14 @@ def create_test_entry(proto):
     hostname = "test.example.com"
     app_name = "app_name"
     y = SyslogEntry(
-            prival=165, timestamp=datetime.utcnow(), 
+            prival=165, timestamp=datetime.utcnow(),
             hostname=hostname, app_name=app_name, procid=os.getpid(), msgid='ID47',
-            structured_data=[SDElement('exampleSDID@32473', 
+            structured_data=[SDElement('exampleSDID@32473',
                 [('iut','3'),
                 ('eventSource','Application'),
                 ('eventID','1011'),
                 ('eventID','1012')]
-                )], 
+                )],
             msg='An application event log entry through '+proto+'...'
     )
     return y
@@ -79,10 +79,10 @@ class TestServer(unittest.TestCase):
 
     def test_tcp(self):
         address = ('127.0.0.1', 5514)
-        
+
         serv = SyslogServer(address, Handler)
         serv.entry = None
-        
+
         thr = threading.Thread(
             target=syslog_server_thread, args=(serv,))
         thr.start()
@@ -92,19 +92,19 @@ class TestServer(unittest.TestCase):
         tm.close()
         thr.join()
         serv.socket.close()
-        
+
         self.assertEqual(serv.entry.msg, "An application event log entry through TCP...")
 
     def test_tcps(self):
         address = ('127.0.0.1', 5515)
-        
+
         keyfile = NamedTemporaryFile(delete=False)
         keyfile.write(key_data)
         keyfile.close()
         certfile = NamedTemporaryFile(delete=False)
         certfile.write(cert_data)
         certfile.close()
-        serv = SyslogServer(address, Handler, 
+        serv = SyslogServer(address, Handler,
             keyfile=keyfile.name,
             certfile=certfile.name)
         serv.entry = None
@@ -120,7 +120,7 @@ class TestServer(unittest.TestCase):
         thr.join()
 
         serv.socket.close()
-        
+
         os.unlink(keyfile.name)
         os.unlink(certfile.name)
 

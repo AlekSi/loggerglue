@@ -99,31 +99,31 @@ class SDElement(object):
             *sd_id*
                 SD-IDs are case-sensitive and uniquely identify the type and purpose
                 of the SD-ELEMENT.
-            
+
             *sd_params*
                 Key/value pairs attached to this SD-ELEMENT. This can be any iterable
                 that yields tuples, a dict or a :class:`~loggerglue.utils.multidict.OrderedMultiDict`
                 (An SD-PARAM key may be repeated multiple times inside an SD-ELEMENT)
-                
+
         **attributes**
             *id*
                 SD-ID for this structured data element.
-                
+
             *sd_params*
-                Key/value pairs attached to this SD-ELEMENT, represented as 
+                Key/value pairs attached to this SD-ELEMENT, represented as
                 a multidict.
-            
+
             *params*
                 Key/value pairs attached to this SD-ELEMENT, represented as
                 a class instance (for convenience, so that parameters can
                 be addressed with `elmt.params.origin`). If there are multiple
                 values for a key, the *last* element is returned.
-                
+
         """
         self.id = sd_id
         self.sd_params = OrderedMultiDict(sd_params)
         self.params = Params(self.sd_params)
-        
+
     def __str__(self):
         """Convert SDElement to formatted string"""
         rv = ['[', self.id]
@@ -147,7 +147,7 @@ class SDElement(object):
 class StructuredData(object):
     def __init__(self, elements):
         self.elements = elements
-        
+
     def __str__(self):
         """Convert StructuredData to string"""
         return ''.join([str(e) for e in self.elements])
@@ -179,47 +179,47 @@ class StructuredData(object):
             traceback.print_exc(file=sys.stdout)
 
             return None
-    
+
 class SyslogEntry(object):
     """
     A class representing a syslog entry.
     """
-    def __init__(self, prival=DEFAULT_PRIVAL, version=1, timestamp=None, 
+    def __init__(self, prival=DEFAULT_PRIVAL, version=1, timestamp=None,
             hostname=None, app_name=None, procid=None, msgid=None,
             structured_data=None, msg=None):
         """
         **arguments/attributes**
-            
+
             *prival*
                 RFC5424 priority values are a combination of a priority and facility, for example `LOG_ALERT | LOG_DAEMON`.
                 See :mod:`loggerglue.constants`.
-            
+
             *version*
                 Version of syslog entry. There is usually no need to change this.
-            
+
             *timestamp*
                 Timestamp (as a datetime object).
-            
+
             *hostname*
                 The HOSTNAME field SHOULD contain the hostname and the domain name of the originator.
-            
+
             *app_name*
                 The APP-NAME field SHOULD identify the device or application that
                 originated the message.  It is a string without further semantics.
                 It is intended for filtering messages on a relay or collector.
-            
+
             *procid*
                 PROCID is a value that is included in the message, having no
                 interoperable meaning, except that a change in the value indicates
-                there has been a discontinuity in syslog reporting. 
-            
+                there has been a discontinuity in syslog reporting.
+
             *msgid*
                 The MSGID SHOULD identify the type of message.
-            
+
             *structured_data*
                 STRUCTURED-DATA provides a mechanism to express information in a well
                 defined, easily parseable and interpretable data format.
-            
+
             *msg*
                 The MSG part contains a free-form message that provides information
                 about the event.
@@ -236,7 +236,7 @@ class SyslogEntry(object):
             structured_data = StructuredData(structured_data)
         self.structured_data = structured_data
         self.msg = msg
-    
+
     @classmethod
     def parse(cls, parsed):
         ts = parse_timestamp(parsed.TIMESTAMP)
@@ -267,11 +267,11 @@ class SyslogEntry(object):
         prival = int(attr['prival'])
         structured_data = StructuredData.parse(parsed)
         return cls(
-            prival=prival, version=version, timestamp=timestamp, 
+            prival=prival, version=version, timestamp=timestamp,
             hostname=attr['hostname'], app_name=attr['app_name'], procid=attr['procid'], msgid=attr['msgid'],
             structured_data=structured_data, msg=msg
         )
-        
+
     def __str__(self):
         """Convert SyslogEntry to string"""
         rv = ['<', str(self.prival), '>', str(self.version), ' ']

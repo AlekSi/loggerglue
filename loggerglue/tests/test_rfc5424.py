@@ -58,7 +58,7 @@ class TestSyslogEntry(unittest.TestCase):
         self.assertEqual(se.timestamp.year, 2003)
         self.assertEqual(se.hostname, 'mymachine.example.com')
         self.assertEqual(se.msgid, 'ID47')
-        
+
         se = SyslogEntry.from_line(valids[3])
         self.assertEqual(len(se.structured_data.elements), 2)
         self.assertEqual(len(se.structured_data.elements[0].sd_params), 3)
@@ -68,25 +68,25 @@ class TestSyslogEntry(unittest.TestCase):
         self.assertEqual(len(se.structured_data.elements), 1)
         self.assertEqual(len(list(se.structured_data.elements[0].sd_params.allitems())), 6)
         self.assertEqual(len(list(se.structured_data.elements[0].sd_params.getall("file"))), 2)
-        
+
         se = SyslogEntry.from_line(valids[5])
         self.assertEqual(str(se), valids[5])
-        
+
         se = SyslogEntry(
-                prival=165, version=1, timestamp=datetime(2003,10,11,22,14,15,3000), 
+                prival=165, version=1, timestamp=datetime(2003,10,11,22,14,15,3000),
                 hostname='mymachine.example.com', app_name='evntslog', procid=None, msgid='ID47',
-                structured_data=StructuredData([SDElement('exampleSDID@32473', 
+                structured_data=StructuredData([SDElement('exampleSDID@32473',
                     [('iut','3'),
                     ('eventSource','Application'),
                     ('eventID','1011')]
-                    )]), 
+                    )]),
                 msg=u'An application event log entry...'
         )
         self.assertEqual(str(se), valids[6])
-        
+
         se = SyslogEntry.from_line(valids[7])
         self.assertEqual(se.timestamp.year, 2011)
-        
+
 
 if __name__ == '__main__':
     unittest.main()

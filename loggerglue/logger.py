@@ -21,13 +21,13 @@ class Logger(object):
         **Arguments**
             *emitter*
                 Emitter object to send syslog messages, default to Unix socket /dev/log
-                
+
             *hostname*
                 Hostname to send with log messages, defaults to system hostname
-                
+
             *app_name*
                 Application name to send with log messages, defaults to application name
-                
+
             *procid*
                 Process ID to send with log messages, default to current process ID
         """
@@ -39,7 +39,7 @@ class Logger(object):
             # Compute default app name from name of executable,
             # without extension.
             app_name = os.path.basename(sys.argv[0])
-            (app_name, _, _) = app_name.partition(".") 
+            (app_name, _, _) = app_name.partition(".")
 
         if procid is None:
             procid = os.getpid()
@@ -52,13 +52,13 @@ class Logger(object):
         self.procid = procid
         self.emitter = emitter
 
-    def log(self, msg=None, msgid=None, structured_data=None, prival=DEFAULT_PRIVAL, 
+    def log(self, msg=None, msgid=None, structured_data=None, prival=DEFAULT_PRIVAL,
             timestamp=None):
         """
-        Log a message. 
+        Log a message.
 
         Example:
-        
+
            >>> logger.log("test", prival=LOG_DEBUG|LOG_MAIL)
 
         **Arguments**
@@ -77,9 +77,9 @@ class Logger(object):
             timestamp = datetime.utcnow()
 
         msg = SyslogEntry(
-                    prival=prival, timestamp=datetime.utcnow(), 
+                    prival=prival, timestamp=datetime.utcnow(),
                     hostname=self.hostname, app_name=self.app_name, procid=self.procid, msgid=msgid,
-                    structured_data=structured_data, 
+                    structured_data=structured_data,
                     msg=msg
             )
 
