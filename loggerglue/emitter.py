@@ -166,3 +166,51 @@ class TCPSyslogEmitter(SyslogEmitter):
             self._connect(self.address, self.ssl_args)
             self._send(msg)
 
+try:
+    from twisted.internet.protocol import DatagramProtocol
+    from twisted.internet import reactor, defer
+
+
+    class UDPTwistedSyslogEmitter(SyslogEmitter, DatagramProtocol):
+        """
+        Syslog emitter through UDP, uses Twisted.
+        """
+
+        def __init__(self, address=('localhost', SYSLOG_DEFAULT_PORT)):
+            self.host, self.port = address
+            self._listener = None
+
+        def startProtocol(self):
+            self.transport.connect(self.host, self.port)
+
+        def open(self):
+            """
+            Resolves hostname, opens socket. Callbacks when done.
+            """
+
+            def resolved(ip):
+                self.host = ip
+                self._listener = reactor.listenUDP(0, self)
+
+            return reactor.resolve(self.host).addCallback(resolved)
+
+        def close(self):
+            """
+            Closes the socket.
+            """
+
+            if self._listener:
+                self._listener.stopListening()
+                self._listener = None
+
+        def emit(self, msg):
+            """
+            Emit a record.
+            """
+
+            if self.transport:
+                self.transport.write(str(msg))
+
+
+except ImportError:
+    pass
