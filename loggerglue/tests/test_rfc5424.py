@@ -50,11 +50,19 @@ class TestSDElement(unittest.TestCase):
         e = SDElement('exampleSDID@32473', [('param1', 'value1'), ('param2', 'value2')])
         self.assertEqual('exampleSDID@32473', e.id)
         self.assertEqual(OrderedMultiDict([('param1', 'value1'), ('param2', 'value2')]), e.sd_params)
+        self.assertEqual('[exampleSDID@32473 param1="value1" param2="value2"]', str(e))
 
     def test_init_with_dict(self):
         e = SDElement('exampleSDID@32473', {'param1': 'value1', 'param2': 'value2'})
         self.assertEqual('exampleSDID@32473', e.id)
         self.assertEqual(OrderedMultiDict({'param1': 'value1', 'param2': 'value2'}), e.sd_params)
+
+
+class TestStructuredData(unittest.TestCase):
+    def test_init_with_elements(self):
+        e = SDElement('exampleSDID@32473', [('param1', 'value1'), ('param2', 'value2')])
+        sd = StructuredData([e])
+        self.assertEqual('[exampleSDID@32473 param1="value1" param2="value2"]', str(sd))
 
 
 class TestSyslogEntry(unittest.TestCase):
@@ -102,4 +110,3 @@ class TestSyslogEntry(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
