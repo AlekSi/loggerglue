@@ -128,7 +128,7 @@ class SDElement(object):
         """Convert SDElement to formatted string"""
         rv = ['[', self.id]
         for (k,v) in self.sd_params.allitems():
-            rv += [' ',k,'="',escape_param_value(v),'"']
+            rv += [' ',k,'="',escape_param_value(unicode(v)),'"']
         rv += [']']
         return ''.join(rv)
 

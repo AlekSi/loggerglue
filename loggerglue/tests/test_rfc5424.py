@@ -47,22 +47,22 @@ class TestABNF(unittest.TestCase):
 
 class TestSDElement(unittest.TestCase):
     def test_init_with_tuples(self):
-        e = SDElement('exampleSDID@32473', [('param1', 'value1'), ('param2', 'value2')])
+        e = SDElement('exampleSDID@32473', [('param1', 1), ('param2', 2)])
         self.assertEqual('exampleSDID@32473', e.id)
-        self.assertEqual(OrderedMultiDict([('param1', 'value1'), ('param2', 'value2')]), e.sd_params)
-        self.assertEqual('[exampleSDID@32473 param1="value1" param2="value2"]', str(e))
+        self.assertEqual(OrderedMultiDict([('param1', 1), ('param2', 2)]), e.sd_params)
+        self.assertEqual('[exampleSDID@32473 param1="1" param2="2"]', str(e))
 
     def test_init_with_dict(self):
-        e = SDElement('exampleSDID@32473', {'param1': 'value1', 'param2': 'value2'})
+        e = SDElement('exampleSDID@32473', {'param1': 1, 'param2': 2})
         self.assertEqual('exampleSDID@32473', e.id)
-        self.assertEqual(OrderedMultiDict({'param1': 'value1', 'param2': 'value2'}), e.sd_params)
+        self.assertEqual(OrderedMultiDict({'param1': 1, 'param2': 2}), e.sd_params)
 
 
 class TestStructuredData(unittest.TestCase):
     def test_init_with_elements(self):
-        e = SDElement('exampleSDID@32473', [('param1', 'value1'), ('param2', 'value2')])
+        e = SDElement('exampleSDID@32473', [('param1', 1), ('param2', 2)])
         sd = StructuredData([e])
-        self.assertEqual('[exampleSDID@32473 param1="value1" param2="value2"]', str(sd))
+        self.assertEqual('[exampleSDID@32473 param1="1" param2="2"]', str(sd))
 
 
 class TestSyslogEntry(unittest.TestCase):
