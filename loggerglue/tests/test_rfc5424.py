@@ -18,7 +18,6 @@ invalids = (
         )
 
 class TestABNF(unittest.TestCase):
-
     def test_valids(self):
         for v in valids:
             syslog_msg.parseString(v)
@@ -45,8 +44,20 @@ class TestABNF(unittest.TestCase):
         self.assertEqual(len(r.SD_ELEMENTS[0].SD_PARAMS), 3)
         self.assertEqual(len(r.SD_ELEMENTS[1].SD_PARAMS), 1)
 
-class TestSyslogEntry(unittest.TestCase):
 
+class TestSDElement(unittest.TestCase):
+    def test_init_with_tuples(self):
+        e = SDElement('exampleSDID@32473', [('param1', 'value1'), ('param2', 'value2')])
+        self.assertEqual('exampleSDID@32473', e.id)
+        self.assertEqual(OrderedMultiDict([('param1', 'value1'), ('param2', 'value2')]), e.sd_params)
+
+    def test_init_with_dict(self):
+        e = SDElement('exampleSDID@32473', {'param1': 'value1', 'param2': 'value2'})
+        self.assertEqual('exampleSDID@32473', e.id)
+        self.assertEqual(OrderedMultiDict({'param1': 'value1', 'param2': 'value2'}), e.sd_params)
+
+
+class TestSyslogEntry(unittest.TestCase):
     def test_class(self):
         for v in valids:
             se = SyslogEntry.from_line(v)

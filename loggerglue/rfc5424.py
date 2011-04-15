@@ -111,7 +111,7 @@ class SDElement(object):
 
             *sd_params*
                 Key/value pairs attached to this SD-ELEMENT, represented as
-                a multidict.
+                a OrderedMultiDict.
 
             *params*
                 Key/value pairs attached to this SD-ELEMENT, represented as

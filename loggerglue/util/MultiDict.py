@@ -179,9 +179,11 @@ class OrderedMultiDict(_BaseMultiDict):
                 multidict = multidict.items()
             for k, v in multidict:
                 self[k] = v
+
     def __eq__(self, other):
         """Does this OrderedMultiDict have the same contents and order as another?"""
         return self.order_data == other.order_data
+
     def __ne__(self, other):
         """Does this OrderedMultiDict have different contents or order as another?"""
         return self.order_data != other.order_data
