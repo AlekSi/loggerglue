@@ -10,11 +10,6 @@ allow multiple values per key.  Some of these need the input order
 strongly preserved, so the items can be retrieved in the same order as
 they were added to the dictionary.  That is the OrderedMultiDict.
 
-Others need a weaker ordering guarantee where the order of values for
-a given key is preserved but the order between the keys is not.  That
-is UnorderedMultiDict.  (Because strong ordering isn't needed, it's
-faster delete from an UnorderedMultiDict.)
-
 To create a MultiDict, pass in an object which implements the
 'allitems' method and returns a list of (key, value) pairs, or
 pass in the list of (key, value) pairs directly.
@@ -223,91 +218,6 @@ class OrderedMultiDict(_BaseMultiDict):
         return iter(self.order_data)
 
 
-
-class UnorderedMultiDict(_BaseMultiDict):
-    """Store key/value mappings.
-
-    Acts like a standard dictionary with the following features:
-       - duplicate keys are allowed;
-
-       - input order is preserved for all values of a given
-           key but not between different keys.
-
-    >>> ud = UnorderedMultiDict([("Food", "Spam"), ("Color", "Blue"),
-    ...                          ("Food", "Eggs"), ("Color", "Green")])
-    >>> ud["Food"]
-    'Eggs'
-    >>> ud.getall("Food")
-    ['Spam', 'Eggs']
-    >>>
-
-    The order of values from a given key (as from ud.getall("Food"))
-    is guaranteed but the order between keys (as from od.allkeys()
-    and od.allitems()) is not.
-
-    Can also pass in an object to the constructor which has an
-    allitems() method that returns a list of key/value pairs.
-
-    """
-    def __init__(self, multidict = None):
-        self.data = {}
-        if multidict is not None:
-            if hasattr(multidict, "allitems"):
-                multidict = multidict.allitems()
-            elif hasattr(multidict, "items"):
-                multidict = multidict.items()
-            for k, v in multidict:
-                self[k] = v
-
-    def __eq__(self, other):
-        """Does this UnorderedMultiDict have the same keys, with values in the same order, as another?"""
-        return self.data == other.data
-
-    def __ne__(self, other):
-        """Does this UnorderedMultiDict NOT have the same keys, with values in the same order, as another?"""
-        return self.data != other.data
-
-    def __repr__(self):
-        return "<UnorderedMultiDict %s>" % (self.data,)
-
-    def __setitem__(self, key, value):
-        """Add a new key/value pair
-
-        If the key already exists, replaces the existing value
-        so that d[key] is the new value and not the old one.
-
-        To get all values for a given key, use d.getall(key).
-        """
-        self.data.setdefault(key, []).append(value)
-
-    def __delitem__(self, key):
-        """Remove all values for the given key"""
-        del self.data[key]
-
-    def allkeys(self):
-        """iterate over all keys in arbitrary order"""
-        for k, v in self.data.iteritems():
-            for x in v:
-                yield k
-
-    def allvalues(self):
-        """iterate over all values in arbitrary order"""
-        for v in self.data.itervalues():
-            for x in v:
-                yield x
-
-    def allitems(self):
-        """iterate over all key/value pairs, in arbitrary order
-
-        Actually, the keys are iterated in arbitrary order but all
-        values for that key are iterated at sequence of addition
-        to the UnorderedMultiDict.
-
-        """
-        for k, v in self.data.iteritems():
-            for x in v:
-                yield (k, x)
-
 __test__ = {
     "test_ordered_multidict": """
         >>> od = OrderedMultiDict()
@@ -382,101 +292,6 @@ __test__ = {
         >>> s = str(od2)
         >>> s = repr(od2)
     """,
-   "test_unordered_multidict": """
-        >>> ud = UnorderedMultiDict()
-        >>> ud["Name"] = "Andrew"
-        >>> ud["Color"] = "BLUE"
-        >>> ud["Name"] = "Dalke"
-        >>> ud["Color"] = "GREEN"
-        >>> ud[3] = 9
-        >>> ud[3]
-        9
-        >>> ud["Name"]
-        'Dalke'
-        >>> ud["Color"]          # line 11
-        'GREEN'
-        >>> ud[3]
-        9
-        >>> len(ud)
-        3
-        >>> len(list(ud)), len(ud.keys()), len(ud.values()), len(ud.items())
-        (3, 3, 3, 3)
-        >>> ud["invalid"]
-        Traceback (most recent call last):
-          File "<stdin>", line 1, in ?
-          File "MultiDict.py", line 105, in __getitem__
-            return self.data[key][-1]
-        KeyError: invalid
-        >>> ud.get("invalid")
-        >>> ud.get("invalid") is None
-        1
-        >>> ud.get("invalid", "red")
-        'red'
-        >>> "Color" in ud
-        1
-        >>> "Color" in ud.keys()        # line 32
-        1
-        >>> "invalid" in ud
-        0
-        >>> "invalid" in ud.keys()
-        0
-        >>> ud.get("Color", "red")
-        'GREEN'
-        >>> "Andrew" in ud.values()
-        0
-        >>> "Dalke" in ud.values()
-        1
-        >>> ud.getall("Color")           # line 44
-        ['BLUE', 'GREEN']
-        >>> ud.getall("invalid")
-        Traceback (most recent call last):
-          File "<stdin>", line 1, in ?
-          File "MultiDict.py", line 126, in __getitem__
-            return self.data[key]
-        KeyError: invalid
-        >>> len(list(ud.allkeys())), len(list(ud.allvalues())), len(list(ud.allitems()))
-        (5, 5, 5)
-        >>> ("Color", "BLUE") in ud.allitems()
-        1
-        >>> ("Color", "GREEN") in ud.allitems()
-        1
-        >>> ("Name", "Andrew") in ud.allitems()   # line 58
-        1
-        >>> ("Name", "Dalke") in ud.allitems()
-        1
-        >>> (3, 9) in ud.allitems()
-        1
-        >>> x = list(ud.allkeys())
-        >>> x.sort()
-        >>> x
-        [3, 'Color', 'Color', 'Name', 'Name']
-        >>> x = list(ud.allvalues())
-        >>> x.sort()
-        >>> x
-        [9, 'Andrew', 'BLUE', 'Dalke', 'GREEN']
-        >>> x = list(ud)
-        >>> x.sort()
-        >>> x
-        [3, 'Color', 'Name']
-        >>> ud2 = UnorderedMultiDict(ud)     # line 76
-        >>> ud == ud2
-        1
-        >>> ud != ud
-        0
-        >>> del ud["Color"]
-        >>> ud == ud2
-        0
-        >>> ud != ud2
-        1
-        >>> len(ud)
-        2
-        >>> "Color" in ud
-        0
-        >>> "Color" in ud2               # line 90
-        1
-        >>> s = str(ud2)
-        >>> s = repr(ud2)
-   """,
   "__doc__": __doc__,
 }
 
