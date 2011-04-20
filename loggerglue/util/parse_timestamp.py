@@ -25,7 +25,7 @@ def parse_timestamp(ts):
         timestamp = parse_date(ts[:-6])
         hours = int(ts[-5:-3])
         mins = int(ts[-2:])
-        sign = ts[-6] == '-' and -1 or 1
+        sign = 1 if ts[-6] == '-' else -1
         timestamp += timedelta(seconds=sign*(hours*3600+mins*60))
 
     return timestamp
