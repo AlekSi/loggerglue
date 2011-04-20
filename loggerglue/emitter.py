@@ -168,7 +168,7 @@ class TCPSyslogEmitter(SyslogEmitter):
 
 try:
     from twisted.internet.protocol import DatagramProtocol
-    from twisted.internet import reactor, defer
+    from twisted.internet import reactor
 
 
     class UDPTwistedSyslogEmitter(SyslogEmitter, DatagramProtocol):
