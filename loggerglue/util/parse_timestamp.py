@@ -11,11 +11,15 @@ def parse_date(ts):
 
 def parse_timestamp(ts):
     '''
-    Parse timestamps in these formats to a datetime structure:
+    Parse timestamps in these formats:
     '2003-10-11T22:14:15.003000Z'
     '2003-10-11T22:14:15.003Z'
     '2003-10-11T22:14:15Z'
     '2003-10-11T22:14:15.003000-07:00'
+    '2003-10-11T22:14:15.003+07:00'
+    '2003-10-11T22:14:15+07:00'
+
+    Returns "naive" datetime object (without timezone info, UTC).
     '''
     if ts == '-':
         timestamp = None
