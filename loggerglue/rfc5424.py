@@ -168,17 +168,19 @@ class StructuredData(object):
         return StructuredData(elements)
 
     @classmethod
-    def from_str(cls, line):
+    def from_str(cls, line, consume_error=True):
         """Returns a StructuredData object from a string"""
         try:
             r = structured_data.parseString(line)
             return cls.parse(r)
         except Exception, e:
-            print e
-            import sys, traceback
-            traceback.print_exc(file=sys.stdout)
-
-            return None
+            if consume_error:
+                print e
+                import sys, traceback
+                traceback.print_exc(file=sys.stdout)
+                return None
+            else:
+                raise
 
 class SyslogEntry(object):
     """
@@ -291,15 +293,17 @@ class SyslogEntry(object):
         return ''.join(rv)
 
     @classmethod
-    def from_line(cls, line):
+    def from_line(cls, line, consume_error=True):
         """Returns a parsed SyslogEntry object from a syslog `line`."""
         try:
             r = syslog_msg.parseString(line.strip())
             return cls.parse(r)
         except Exception, e:
-            print e
-            import sys, traceback
-            traceback.print_exc(file=sys.stdout)
-
-            return None
+            if consume_error:
+                print e
+                import sys, traceback
+                traceback.print_exc(file=sys.stdout)
+                return None
+            else:
+                raise
 
