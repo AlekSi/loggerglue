@@ -183,6 +183,10 @@ try:
         def startProtocol(self):
             self.transport.connect(self.host, self.port)
 
+        def connectionRefused(self):
+            # ignore
+            pass
+
         def open(self):
             """
             Resolves hostname, opens socket. Callbacks when done.
