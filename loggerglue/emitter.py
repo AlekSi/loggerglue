@@ -181,10 +181,12 @@ try:
             self._listener = None
 
         def startProtocol(self):
-            self.transport.connect(self.host, self.port)
+            # not used with non-connected UDP sockets
+            pass
 
         def connectionRefused(self):
-            # ignore
+            # ignored, and not really possible with current
+            # Twisted's implementaion of non-connected UDP sockets and reactors
             pass
 
         def open(self):
@@ -213,7 +215,7 @@ try:
             """
 
             if self.transport:
-                self.transport.write(str(msg))
+                self.transport.write(str(msg), (self.host, self.port))
 
 
 except ImportError:
