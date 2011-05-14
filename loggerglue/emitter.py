@@ -169,6 +169,7 @@ class TCPSyslogEmitter(SyslogEmitter):
 try:
     from twisted.internet.protocol import DatagramProtocol
     from twisted.internet import reactor
+    from twisted.internet.defer import DeferredList
 
 
     class UDPTwistedSyslogEmitter(SyslogEmitter, DatagramProtocol):
@@ -177,8 +178,9 @@ try:
         """
 
         def __init__(self, address=('localhost', SYSLOG_DEFAULT_PORT)):
-            self.host, self.port = address
+            self.addresses = [address]
             self._listener = None
+            self._i = 0
 
         def startProtocol(self):
             # not used with non-connected UDP sockets
@@ -191,14 +193,20 @@ try:
 
         def open(self):
             """
-            Resolves hostname, opens socket. Callbacks when done.
+            Resolves hostnames, opens socket. Callbacks when done.
             """
 
-            def resolved(ip):
-                self.host = ip
+            def one_resolved(ip, host):
+                for i in xrange(self.addresses_len):
+                    if self.addresses[i][0] == host:
+                        self.addresses[i] = (ip, self.addresses[i][1])
+
+            def all_resolved(_):
                 self._listener = reactor.listenUDP(0, self)
 
-            return reactor.resolve(self.host).addCallback(resolved)
+            self.addresses_len = len(self.addresses)
+            deferreds = [reactor.resolve(host).addCallback(one_resolved, host) for (host, _) in self.addresses]
+            return DeferredList(deferreds, fireOnOneErrback=True).addCallback(all_resolved)
 
         def close(self):
             """
@@ -215,7 +223,8 @@ try:
             """
 
             if self.transport:
-                self.transport.write(str(msg), (self.host, self.port))
+                self.transport.write(str(msg), self.addresses[self._i])
+                self._i = (self._i + 1) % self.addresses_len
 
 
 except ImportError:
