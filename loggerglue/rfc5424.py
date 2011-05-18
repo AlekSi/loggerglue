@@ -4,6 +4,8 @@ A parser for the Syslog Protocol (RFC5424 - http://tools.ietf.org/search/rfc542)
 
 Copyright © 2011 Evax Software <contact@evax.fr>
 """
+
+import time
 from datetime import datetime
 from pyparsing import Word, Regex, Group, White, Combine, CharsNotIn, \
     ZeroOrMore, OneOrMore, QuotedString, Or, Optional, LineStart, LineEnd, \
@@ -230,6 +232,7 @@ class SyslogEntry(object):
         self.prival = prival
         self.version = version
         self.timestamp = timestamp
+        self.timestamp_as_float = False
         self.hostname = hostname
         self.app_name = app_name
         self.procid = procid
@@ -279,6 +282,10 @@ class SyslogEntry(object):
         rv = ['<', str(self.prival), '>', str(self.version), ' ']
         if self.timestamp is None:
             rv.append('-')
+        elif self.timestamp_as_float:
+            t = time.mktime(self.timestamp.utctimetuple())
+            t += self.timestamp.microsecond / 1000000.0
+            rv.append(repr(t))
         else:
             rv.append(self.timestamp.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
         rv += [' ',

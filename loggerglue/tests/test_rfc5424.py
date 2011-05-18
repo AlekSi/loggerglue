@@ -108,5 +108,13 @@ class TestSyslogEntry(unittest.TestCase):
         self.assertEqual(se.timestamp.year, 2011)
 
 
+class TestSyslogEntry(unittest.TestCase):
+    def test_float_timestamp(self):
+        se = SyslogEntry(timestamp=datetime(2003,10,11,22,14,15,3000))
+        self.assertEqual('<14>1 2003-10-11T22:14:15.003000Z - - - - -', str(se))
+        se.timestamp_as_float = True
+        self.assertEqual('<14>1 1065899655.003 - - - - -', str(se))
+
+
 if __name__ == '__main__':
     unittest.main()
