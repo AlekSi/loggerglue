@@ -5,7 +5,7 @@ A parser for the Syslog Protocol (RFC5424 - http://tools.ietf.org/search/rfc542)
 Copyright © 2011 Evax Software <contact@evax.fr>
 """
 
-import time
+import calendar
 from datetime import datetime
 from pyparsing import Word, Regex, Group, White, Combine, CharsNotIn, \
     ZeroOrMore, OneOrMore, QuotedString, Or, Optional, LineStart, LineEnd, \
@@ -283,7 +283,7 @@ class SyslogEntry(object):
         if self.timestamp is None:
             rv.append('-')
         elif self.timestamp_as_float:
-            t = time.mktime(self.timestamp.utctimetuple())
+            t = calendar.timegm(self.timestamp.utctimetuple())
             t += self.timestamp.microsecond / 1000000.0
             rv.append(repr(t))
         else:

@@ -113,7 +113,7 @@ class TestSyslogEntry(unittest.TestCase):
         se = SyslogEntry(timestamp=datetime(2003,10,11,22,14,15,3000))
         self.assertEqual('<14>1 2003-10-11T22:14:15.003000Z - - - - -', str(se))
         se.timestamp_as_float = True
-        self.assertEqual('<14>1 1065899655.003 - - - - -', str(se))
+        self.assertEqual('<14>1 1065910455.003 - - - - -', str(se))
 
 
 if __name__ == '__main__':
