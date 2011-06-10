@@ -1,4 +1,4 @@
 include *.txt
+include *.rst
 global-exclude *.pyc
 global-exclude *~
-
